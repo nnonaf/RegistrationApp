@@ -3,7 +3,8 @@ var bcrypt = require('bcrypt-nodejs');
 var { keys, toLower} = require('lodash');
 var { generateSearchQuery, generateGetSingleQuery } = require('./utils');
 const CLOUDANT = process.env.CLOUDANT;
-var User = require('cloudant-quickstart')(CLOUDANT);
+const CLOUDANT_db = process.env.CLOUDANT_DATABASE;
+var User = require(CLOUDANT_db)(CLOUDANT);
 
 var createUser = async (email, password, others) => {
   try {
