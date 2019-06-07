@@ -8,6 +8,7 @@
     "server": "nodemon server.js"
   },
   "dependencies": {
+    "@cloudant/cloudant": "^4.1.0",
     "amqplib": "^0.5.2",
     "axios": "^0.18.0",
     "bcrypt-nodejs": "0.0.3",

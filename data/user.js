@@ -4,10 +4,22 @@ var { keys, toLower} = require('lodash');
 var { generateSearchQuery, generateGetSingleQuery } = require('./utils');
 const CLOUDANT = process.env.CLOUDANT;
 const CLOUDANT_db = process.env.CLOUDANT_DATABASE;
-var User = require(CLOUDANT_db)(CLOUDANT);
+const CLOUDANT_password = process.env.CLOUDANT_PASSWORD;
+const CLOUDANT_userneame = process.env.CLOUDANT_USERNAME;
+
+// var User = require(CLOUDANT_db)(CLOUDANT);
+var Cloudant = require('@cloudant/cloudant');
+// var cloudant = Cloudant({ account:CLOUDANT_db, username:CLOUDANT_userneame, password:CLOUDANT_password});
+var cloudant = Cloudant(CLOUDANT);
 
 var createUser = async (email, password, others) => {
   try {
+
+
+    // let save =  await cloudant.db.create('alice');
+       let see = await cloudant.use('alice').insert({ author:"Charles Dickens", title:"David Copperfield"  });
+       console.log(see)
+    
 
      //CHECK IF USER NAME IS EXITING ON DB
 
@@ -19,9 +31,9 @@ var createUser = async (email, password, others) => {
      //REGISTER USER WITH HASHED PASSWORD
 
          
-         let see = await User.insert({ _id: 'dog1', name:'Bobby', colour:'black', collection:'dogs', cost:45, weight:6.4})
+        //  let see = await User.insert({ _id: 'dog1', name:'Bobby', colour:'black', collection:'dogs', cost:45, weight:6.4})
         //  .then(console.log);
-        console.log(see);
+        // console.log(see);
     // let existingEmail = await User.findOne({ email: new RegExp("^" + email + "$", 'i') });
     // if (existingEmail) {
     //   throw { _message: 'email already exists' };
