@@ -11,16 +11,29 @@ const CLOUDANT_userneame = process.env.CLOUDANT_USERNAME;
 var Cloudant = require('@cloudant/cloudant');
 // var cloudant = Cloudant({ account:CLOUDANT_db, username:CLOUDANT_userneame, password:CLOUDANT_password});
 var cloudant = Cloudant(CLOUDANT);
+ const db = cloudant.db.use(CLOUDANT_db);  
 
 var createUser = async (email, password, others) => {
   try {
 
 
     // let save =  await cloudant.db.create('alice');
-       let see = await cloudant.use('alice').insert({ author:"Charles Dickens", title:"David Copperfield"  });
-       console.log(see)
-    
+      //  let see = await cloudant.use('alice').get('author:Charles Dickens');  //{ author:"Charles Dickens", title:"David Copperfield"  }
+      //  console.log(see) 
 
+
+       
+        // let see = await db.get("_all_docs")
+        let see = await db.get({requestDefaults:{"author":Ferdinand}})  //"requestDefaults": { "agent" : myagent }
+         console.log(see)
+
+         
+    //    db.get("dog", function(err, data) {
+    //      // The rest of your code goes here. For example:
+    //      console.log("Found dog:", data);
+    //    });
+    //  });
+     
      //CHECK IF USER NAME IS EXITING ON DB
 
 
@@ -49,7 +62,7 @@ var getUsers = async (cond) => {
   try {
 
 
-    // return await generateSearchQuery(User, cond);
+     return await db.get("_all_docs");
   } catch (error) {
     throw error;
   }
