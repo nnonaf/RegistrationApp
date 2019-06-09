@@ -23,9 +23,8 @@ var createUser = async (email, password, username) => {
   }
 }
 
-var getUsers = async (cond) => {
+var getUsers = async () => {
   try {
-
 
     return await db.get("_all_docs");
   } catch (error) {
@@ -34,11 +33,14 @@ var getUsers = async (cond) => {
 };
 
 var getUser = async (userId) => {
-  try {
-    return await db.get(userId);
+  try { 
+
+    
+     let userInfo = await db.find({selector:{_id:userId}});
+    
+  
   } catch (error) {
-    console.log(error)
-     return error;
+    throw error;
   }
 }
 

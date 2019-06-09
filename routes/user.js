@@ -6,8 +6,8 @@ module.exports = {
   get: async (req, res) => {
     if (req.params.id) {
       try {
-        let user = await User.getUser(req.params.id, req.query);
-        res.json(user);
+        let user = await User.getUser(req.params.id);       
+        res.json(user.docs[0]);
       } catch (error) {
         console.log(error);
         res.status(404).json({ message: 'failed to retrieve user' });
@@ -15,7 +15,8 @@ module.exports = {
 
     } else {
       try {
-        let users = await User.getUsers(req.query);
+       
+        let users = await User.getUsers();
         res.json(users);
       } catch (error) {
         console.log(error);
