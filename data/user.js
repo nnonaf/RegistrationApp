@@ -1,59 +1,24 @@
-// var { User } = require('../models');
 var bcrypt = require('bcrypt-nodejs');
-var { keys, toLower} = require('lodash');
-var { generateSearchQuery, generateGetSingleQuery } = require('./utils');
+var { keys, toLower } = require('lodash');
 const CLOUDANT = process.env.CLOUDANT;
 const CLOUDANT_db = process.env.CLOUDANT_DATABASE;
-const CLOUDANT_password = process.env.CLOUDANT_PASSWORD;
-const CLOUDANT_userneame = process.env.CLOUDANT_USERNAME;
-
-// var User = require(CLOUDANT_db)(CLOUDANT);
 var Cloudant = require('@cloudant/cloudant');
-// var cloudant = Cloudant({ account:CLOUDANT_db, username:CLOUDANT_userneame, password:CLOUDANT_password});
 var cloudant = Cloudant(CLOUDANT);
- const db = cloudant.db.use(CLOUDANT_db);  
+const db = cloudant.db.use(CLOUDANT_db);
 
-var createUser = async (email, password, others) => {
+var createUser = async (email, password, username) => {
   try {
 
 
-    // let save =  await cloudant.db.create('alice');
-      //  let see = await cloudant.use('alice').get('author:Charles Dickens');  //{ author:"Charles Dickens", title:"David Copperfield"  }
-      //  console.log(see) 
+    let existingEmail = await db.find({ selector: { email } })
 
+    if (existingEmail.bookmark !== "nil") {
+      throw { _message: 'email already exists' };
+    }
 
-       
-        // let see = await db.get("_all_docs")
-        let see = await db.get({requestDefaults:{"author":Ferdinand}})  //"requestDefaults": { "agent" : myagent }
-         console.log(see)
-
-         
-    //    db.get("dog", function(err, data) {
-    //      // The rest of your code goes here. For example:
-    //      console.log("Found dog:", data);
-    //    });
-    //  });
-     
-     //CHECK IF USER NAME IS EXITING ON DB
-
-
-     //CHECK IF EMAIL IS EXITING ON THE DB
-
-
-
-     //REGISTER USER WITH HASHED PASSWORD
-
-         
-        //  let see = await User.insert({ _id: 'dog1', name:'Bobby', colour:'black', collection:'dogs', cost:45, weight:6.4})
-        //  .then(console.log);
-        // console.log(see);
-    // let existingEmail = await User.findOne({ email: new RegExp("^" + email + "$", 'i') });
-    // if (existingEmail) {
-    //   throw { _message: 'email already exists' };
-    // }
-    // let user = new User(Object.assign({ email, password: bcrypt.hashSync(password) }, others));
-    // return await user.save();
-  } catch (error) {
+    let newUserCreation = await db.insert({ email :email,username :username, password:bcrypt.hashSync(password) });
+    return newUserCreation
+    } catch (error) {
     throw error;
   }
 }
@@ -62,29 +27,24 @@ var getUsers = async (cond) => {
   try {
 
 
-     return await db.get("_all_docs");
+    return await db.get("_all_docs");
   } catch (error) {
     throw error;
   }
 };
 
-var getUser = async (cond, options) => {
+var getUser = async (userId) => {
   try {
-
-
-
-    // return await generateGetSingleQuery(User, cond, options);
+    return await db.get(userId);
   } catch (error) {
-    throw error;
+    console.log(error)
+     return error;
   }
 }
 
 var getUserByEmail = async (email) => {
   try {
-    // return await User.findOne({ email: new RegExp("^" + email + "$", 'i') });
-
-
-
+     return await db.find({ selector: { email} })
   } catch (error) {
     throw error;
   }
@@ -92,9 +52,7 @@ var getUserByEmail = async (email) => {
 
 var getUserByUserName = async (userName) => {
   try {
-
-
-    // return await User.findOne({ userName: new RegExp(userName, 'i') });
+     return  await db.find({ selector:{ username:uesrname}});
   } catch (error) {
     throw error;
   }
@@ -102,8 +60,8 @@ var getUserByUserName = async (userName) => {
 
 var authenticate = async (email, password) => {
   try {
-    let user = await User.findOne({ email: new RegExp("^" + email + "$", 'i') });
-    if (user && bcrypt.compareSync(password, user.password)) {
+    let user = await db.find({ selector: { email}});  
+    if (user && bcrypt.compareSync(password, user.docs[0].password)) {
       return user;
     }
     throw { _message: 'email or password incorrect' };
@@ -112,26 +70,6 @@ var authenticate = async (email, password) => {
   }
 }
 
-var updateUser = async (id, data) => {
-  try {
-    let user = await User.findById(id);
-    keys(data).forEach((k) => {
-      switch (k) {
-        case 'password':
-          user.password = bcrypt.hashSync(data[k]);
-          break;
-        default:
-          user[k] = data[k];
-      }
-    });
-    await user.save();
-    return await User.findById(id);
-  } catch (error) {
-    throw error;
-  }
-}
-
-var deleteUser = (id) => updateUser(id, { disabled: true });
 
 module.exports = {
   createUser,
@@ -139,6 +77,5 @@ module.exports = {
   getUser,
   getUserByEmail,
   authenticate,
-  updateUser,
-  deleteUser
+  
 };

@@ -54,16 +54,10 @@ module.exports = {
     try {
       let { email, password } = req.body;
       let user = await User.authenticate(email, password);
-      if (!user.verified && STRICT_VERIFICATION) {
-        return res.status(401).json({ message: 'account not verified. Please check inbox for verification details' });
-      }
-      if (user.disabled) {
-        return res.status(401).json({ message: 'account disabled. contact admin' });
-      }
       let token = jwt.sign({
         data: user.id,
       }, TOKEN_SECRET);
-      res.json(Object.assign({ _token: token }, user._doc));
+      res.json(Object.assign({ _token: token }));
     } catch (error) {
       console.log(error);
       res.status(401).json({ message: 'email or password incorrect' });

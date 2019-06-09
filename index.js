@@ -10,6 +10,7 @@ var requestIp = require('request-ip');
 var routes = require('./routes');
 var mung = require('express-mung');
 var { filterProperties } = require('./data/utils');
+let indexingOfKeyword = require('./index/index')
 
 app.set('view engine', 'ejs');
 
@@ -28,6 +29,11 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT;
 
+
+indexingOfKeyword()
+  
+
+
 //middleware to access response body object
 app.use(mung.json(
   function transform(body, req, res) {
@@ -38,7 +44,7 @@ app.use(mung.json(
       return res.json(body);
     }
     // do something with body 
-    if (req.user && req.user.isAdmin) {
+    if (req.user) {
       return filterProperties(body, (data) => false);
     }
     return filterProperties(body, (data) => {
@@ -54,7 +60,6 @@ app.use(mung.json(
   }
 ));
 
-// ['password', 'isAdmin', 'documents', 'contact', 'firstName', 'lastName'], ['password']
 
 
 
@@ -70,13 +75,10 @@ app.all('/login', routes.auth.login);
 // user end points
 app.post('/users', routes.user.post);
 
-app.get('/users',  routes.user.get);
+app.get('/users', routes.auth.verify, routes.user.get);
 
-app.get('/users/:id', routes.auth.verify, routes.user.get);
-
-
-app.put('/users/:id', routes.auth.verify, routes.user.put);
-
+app.get('/users/:id',routes.auth.verify,routes.user.get);
+// 
 
 console.log(`listening on ${PORT}`);
 app.listen(PORT);
