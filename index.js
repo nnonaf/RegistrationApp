@@ -75,9 +75,9 @@ app.all('/login', routes.auth.login);
 // user end points
 app.post('/users', routes.user.post);
 
-app.get('/users', routes.auth.verify, routes.user.get);
+//app.get('/users', routes.auth.verify, routes.user.get);
 
-app.get('/users/:id',routes.auth.verify,routes.user.get);
+//app.get('/users/:id',routes.auth.verify,routes.user.get);
 // 
 
 console.log(`listening on ${PORT}`);
