@@ -69,15 +69,17 @@ app.get('/', function (req, res, next) {
 
 // **************** Route definitions start from here *********************
 
-// login
-app.all('/login', routes.auth.login);
+
+app.post('/system', routes.system.post);
+
+app.all('/login',routes.system.verify, routes.auth.login,routes.system.verify);
 
 // user end points
-app.post('/users', routes.user.post);
+app.post('/users',routes.system.verify, routes.user.post);
 
-app.get('/users', routes.auth.verify, routes.user.get);
+// app.get('/users', routes.auth.verify, routes.user.get);
 
-app.get('/users/:id',routes.auth.verify,routes.user.get);
+// app.get('/users/:id',routes.auth.verify,routes.user.get);
 // 
 
 console.log(`listening on ${PORT}`);

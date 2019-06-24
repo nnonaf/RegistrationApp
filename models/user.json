@@ -1,0 +1,13 @@
+{
+  "user_id": 1,
+  "user_no": 12345678901,
+  "first_name": "Technology",
+  "last_name": "Josla",
+  "phone": "08012345678",
+  "email": "technology@josla.com.ng",
+  "status": "inactive",
+  "password": "tech-dev",
+  "token": "123456",
+  "role": "customer",
+  "TOC": 1560499586
+}
