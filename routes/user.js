@@ -2,11 +2,16 @@ var User = require('../data/user');
 var { omit, hasIn, get } = require('lodash');
 var emailValidator = require("email-validator");
 
+const accountSid =  process.env.TWILIO_ACCOUNTS_ID
+const authToken =  process.env.TWILIO_AUTH_TOKEN
+const client = require('twilio')(accountSid, authToken);
+
+
 module.exports = {
   get: async (req, res) => {
     if (req.params.id) {
       try {
-        let user = await User.getUser(req.params.id);       
+        let user = await User.getUser(req.params.id);
         res.json(user.docs[0]);
       } catch (error) {
         console.log(error);
@@ -15,7 +20,7 @@ module.exports = {
 
     } else {
       try {
-       
+
         let users = await User.getUsers();
         res.json(users);
       } catch (error) {
@@ -35,8 +40,15 @@ module.exports = {
       if (emailIsValide === false) {
         return res.status(400).json({ message: 'Invalide email address' });
       }
+
       let newUserDetails = await User.createUser(email, password, username);
-      //let {password, ...res} = {password, ...req.body, ...newUserDetails }
+      client.messages
+        .create({
+          body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+          from: '+15017122661',
+          to: '+15558675310'
+        })
+        .then(message => console.log(message.sid));
       res.json(newUserDetails);
 
     } catch (error) {

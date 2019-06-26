@@ -6,6 +6,17 @@ const TOKEN_SECRET = process.env.TOKEN_SECRET;
 
 module.exports = {
   verify: async (req, res, next) => {
+    let {security_token} = req.headers
+
+    if (security_token === null || security_token === undefined || security_token.length === 0) {
+      return res.status(401).json({status:401, message: 'system security_token not found' });
+   }
+
+  let  checkSystemExist = await System.getSystem({security_token});
+  if(checkSystemExist.docs.length === 0){
+  
+    return res.status(401).json({status:401, message: 'Access denied' });
+  }
 
 
       // console.log(req.headers.system)

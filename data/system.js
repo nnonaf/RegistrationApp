@@ -41,7 +41,7 @@ var createSystem = async (data) => {
 var getSystem = async (data) => {
   try {
 
-    let system = await db.find({ selector: { data } });
+    let system = await db.find({ selector:data });
     return system
 
 

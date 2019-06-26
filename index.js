@@ -72,10 +72,10 @@ app.get('/', function (req, res, next) {
 
 app.post('/system', routes.system.post);
 
-app.all('/login',routes.system.verify, routes.auth.login,routes.system.verify);
+app.all('/login',routes.system.verify, routes.auth.login);
 
 // user end points
-app.post('/users',routes.system.verify, routes.user.post);
+app.post('/users',routes.system.verify,routes.user.post);
 
 
 console.log(`listening on ${PORT}`);
